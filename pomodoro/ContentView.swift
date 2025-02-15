@@ -29,7 +29,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color.blue)
                             .frame(width: 100, height: 40)
-                        Text(isRunning ? "一時停止" : "開始")
+                        Text(isRunning ? "Stop🛑" : "Start🏃‍♂️")
                             .foregroundColor(.white)
                     }
                 }
@@ -41,7 +41,7 @@ struct ContentView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .fill(Color.red)
                             .frame(width: 100, height: 40)
-                        Text("リセット")
+                        Text("Reset🔄")
                             .foregroundColor(.white)
                     }
                 }
