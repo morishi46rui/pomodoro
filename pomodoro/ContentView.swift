@@ -27,7 +27,7 @@ struct ContentView: View {
                 Button(action: startTimer) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.blue)
+                            .fill(isRunning ? Color.orange : Color.blue)
                             .frame(width: 100, height: 40)
                         Text(isRunning ? "Stop🛑" : "Start🏃‍♂️")
                             .foregroundColor(.white)
@@ -48,6 +48,19 @@ struct ContentView: View {
                 .buttonStyle(.borderless)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
+
+            Button(action: switchTimerModeManually) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.green)
+                        .frame(width: 200, height: 40)
+                    Text(isWorkTime ? "Switch to Break☕️" : "Switch to Work👨‍💻")
+                        .foregroundColor(.white)
+                }
+            }
+            .buttonStyle(.borderless)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(.top, 10)
         }
         .padding()
         .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 250, idealHeight: 300, maxHeight: 350)
@@ -80,7 +93,12 @@ struct ContentView: View {
     func switchTimerMode() {
         isWorkTime.toggle()
         timeRemaining = isWorkTime ? 25 * 60 : 5 * 60
-        startTimer()
+    }
+
+    func switchTimerModeManually() {
+        timer?.invalidate()
+        isRunning = false
+        switchTimerMode()
     }
 
     func timeString(time: Int) -> String {
