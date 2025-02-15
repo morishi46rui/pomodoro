@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct ContentView: View {
     @State private var timeRemaining = 25 * 60
@@ -64,6 +65,9 @@ struct ContentView: View {
         }
         .padding()
         .frame(minWidth: 300, idealWidth: 350, maxWidth: 400, minHeight: 250, idealHeight: 300, maxHeight: 350)
+        .onAppear {
+            requestNotificationPermission()
+        }
     }
 
     func startTimer() {
@@ -93,6 +97,7 @@ struct ContentView: View {
     func switchTimerMode() {
         isWorkTime.toggle()
         timeRemaining = isWorkTime ? 25 * 60 : 5 * 60
+        sendNotification()
     }
 
     func switchTimerModeManually() {
@@ -105,6 +110,34 @@ struct ContentView: View {
         let minutes = time / 60
         let seconds = time % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if let error = error {
+                print("通知許可エラー: \(error.localizedDescription)")
+            } else if granted {
+                print("通知が許可されました")
+            } else {
+                print("通知が拒否されました")
+            }
+        }
+    }
+
+    func sendNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = isWorkTime ? "Work Time! 👨‍💻" : "Break Time! ☕️"
+        content.body = isWorkTime ? "Time to focus! Let's work for 25 minutes." : "Time to relax! Take a 5-minute break."
+        content.sound = UNNotificationSound.default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("通知送信エラー: \(error.localizedDescription)")
+            }
+        }
     }
 }
 
